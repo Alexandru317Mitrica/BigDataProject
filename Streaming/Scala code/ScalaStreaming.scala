@@ -68,14 +68,13 @@ import scala.language.postfixOps
 object ScalaStreaming {
 
 case class Dates(date: String, 
-                 protocolIP: String, 
-                 destinationip: String, 
-                 destinationport: Double, 
-                 lengthdest: Double, 
-                 ourceip: String, 
-                 sourceport: Double, 
-                 protocolTCP: String, 
-                 lengthsource: Double)
+		 protocolIP: String, 
+		 source_IP: String,
+		 source_port : Double,  
+		 destination_IP : String, 
+		 destination_port : Double, 
+		 protocolTCP: String, 
+		 lengthsource: Double)
 
   def main(args: Array[String]) {
 
@@ -99,11 +98,10 @@ case class Dates(date: String,
     val schema = StructType(Array(
                         StructField("date", StringType, true),
 		        StructField("protocolIP", StringType, true),
-           	        StructField("destinationip", StringType, true),
-                        StructField("destinationport", DoubleType, true),
-		        StructField("lengthdest", DoubleType, true),
-	                StructField("sourceip", StringType, true),
-		        StructField("sourceport", DoubleType, true),
+           	        StructField("source_IP", StringType, true),
+                        StructField("source_port", DoubleType, true),
+	                StructField("destination_IP", StringType, true),
+		        StructField("destination_port", DoubleType, true),
 		        StructField("protocolTCP", StringType, true),
 		        StructField("lengthsource", DoubleType, true) ))
 
@@ -111,7 +109,7 @@ case class Dates(date: String,
 
     val prop = new java.util.Properties()
     prop.put("user", "root")
-    prop.put("password", "M0ns00n!!!")
+    prop.put("password", "<passwd>")
 
     val driver = "com.mysql.jdbc.Driver"
     val url = "jdbc:mysql://localhost:3306/networkmonitoring"
@@ -123,14 +121,13 @@ case class Dates(date: String,
 
 
 val uDStream = linesDStream.map(_._2).map(_.split(",")).map(p => Dates(p(0).toString,
-                                                                       p(1).toString,
-                                                                       p(2).toString,
-                                                                       p(3).toDouble, 
-                                                                       p(4).toDouble, 
-                                                                       p(5).toString, 
-                                                                       p(6).toDouble,
-	                                                               p(7).toString, 
-                                                                       p(8).toDouble))
+								       p(1).toString,
+								       p(2).toString,
+								       p(3).toDouble, 
+								       p(4).toString, 
+								       p(5).toDouble,
+								       p(6).toString, 
+								       p(7).toDouble))
 
 
 uDStream.foreachRDD{ rdd =>
