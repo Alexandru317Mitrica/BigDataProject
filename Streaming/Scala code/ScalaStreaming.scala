@@ -79,7 +79,7 @@ case class Dates(date: String,
 
   def main(args: Array[String]) {
 
-  		val config = new SparkConf()
+  	       val config = new SparkConf()
                val sc = new SparkContext(config)
 
       val sqlContext= new org.apache.spark.sql.SQLContext(sc)
@@ -98,14 +98,14 @@ case class Dates(date: String,
 
     val schema = StructType(Array(
                         StructField("date", StringType, true),
-		                    StructField("protocolIP", StringType, true),
-           	            StructField("destinationip", StringType, true),
+		        StructField("protocolIP", StringType, true),
+           	        StructField("destinationip", StringType, true),
                         StructField("destinationport", DoubleType, true),
-		                    StructField("lengthdest", DoubleType, true),
-	                    	StructField("sourceip", StringType, true),
-		                    StructField("sourceport", DoubleType, true),
-		                    StructField("protocolTCP", StringType, true),
-		                    StructField("lengthsource", DoubleType, true) ))
+		        StructField("lengthdest", DoubleType, true),
+	                StructField("sourceip", StringType, true),
+		        StructField("sourceport", DoubleType, true),
+		        StructField("protocolTCP", StringType, true),
+		        StructField("lengthsource", DoubleType, true) ))
 
 
 
@@ -129,7 +129,7 @@ val uDStream = linesDStream.map(_._2).map(_.split(",")).map(p => Dates(p(0).toSt
                                                                        p(4).toDouble, 
                                                                        p(5).toString, 
                                                                        p(6).toDouble,
-	                                                                     p(7).toString, 
+	                                                               p(7).toString, 
                                                                        p(8).toDouble))
 
 
