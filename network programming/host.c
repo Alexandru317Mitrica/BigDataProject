@@ -124,7 +124,7 @@ int main(void)
 		    }
 
 		    bzero(sendbuff, LENGTH); 
-		//	memset(&sendbuff, 0, sizeof(sendbuff))
+		
 		    int file_size; 
 		    while((file_size = fread(sendbuff, sizeof(char), LENGTH, fs))>0)
 		    {
