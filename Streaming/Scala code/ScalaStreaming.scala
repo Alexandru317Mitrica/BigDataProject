@@ -69,7 +69,7 @@ object ScalaStreaming {
 
 case class Dates(date: String, 
 		 protocolIP: String, 
-		 source_IP: String,
+		 source_IP: String, 
 		 source_port : Double,  
 		 destination_IP : String, 
 		 destination_port : Double, 
@@ -78,15 +78,16 @@ case class Dates(date: String,
 
   def main(args: Array[String]) {
 
-  	       val config = new SparkConf()
-               val sc = new SparkContext(config)
+  	val config = new SparkConf()
+        val sc = new SparkContext(config)
 
-      val sqlContext= new org.apache.spark.sql.SQLContext(sc)
-      import sqlContext.implicits._
+        val sqlContext= new org.apache.spark.sql.SQLContext(sc)
 
-               val ssc = new StreamingContext(sc, Seconds(5))
+	import sqlContext.implicits._
 
-                //kafka set-up
+        val ssc = new StreamingContext(sc, Seconds(5))
+
+     //kafka set-up
 
                val brokers = "172.20.0.7:9092"
                val topics = "network-topic"
@@ -94,36 +95,39 @@ case class Dates(date: String,
 
 
                val kafkaParams = Map[String, String]("metadata.broker.list" -> brokers)
+	  
+	  
 
-    val schema = StructType(Array(
-                        StructField("date", StringType, true),
-		        StructField("protocolIP", StringType, true),
-           	        StructField("source_IP", StringType, true),
-                        StructField("source_port", DoubleType, true),
-	                StructField("destination_IP", StringType, true),
-		        StructField("destination_port", DoubleType, true),
-		        StructField("protocolTCP", StringType, true),
-		        StructField("lengthsource", DoubleType, true) ))
+  val schema = StructType(Array(
+		StructField("date", StringType, true),
+		StructField("protocolIP", StringType, true),
+           	StructField("source_IP", StringType, true),
+           	StructField("source_port", DoubleType, true),
+		StructField("destination_IP", StringType, true),
+		StructField("destination_port", DoubleType, true),
+		StructField("protocolTCP", StringType, true),
+		StructField("lengthsource", DoubleType, true) ))
 
 
 
-    val prop = new java.util.Properties()
-    prop.put("user", "root")
-    prop.put("password", "<passwd>")
+val prop = new java.util.Properties()
+prop.put("user", "root")
+prop.put("password", "<passwd>")
 
-    val driver = "com.mysql.jdbc.Driver"
-    val url = "jdbc:mysql://localhost:3306/networkmonitoring"
+val driver = "com.mysql.jdbc.Driver"
+val url = "jdbc:mysql://localhost:3306/networkmonitoring"
+	  
 
-    //val hdfsdir ="/tmp/Zepp_date"
+val hdfsdir ="/tmp/Zepp_date"
 
-   val linesDStream = KafkaUtils.createDirectStream[String, String, StringDecoder, StringDecoder](ssc, kafkaParams, topicsSet)
+ val linesDStream = KafkaUtils.createDirectStream[String, String, StringDecoder, StringDecoder](ssc, kafkaParams, topicsSet)
 
 
 
 val uDStream = linesDStream.map(_._2).map(_.split(",")).map(p => Dates(p(0).toString,
 								       p(1).toString,
 								       p(2).toString,
-								       p(3).toDouble, 
+								       p(3).toDouble,  
 								       p(4).toString, 
 								       p(5).toDouble,
 								       p(6).toString, 
@@ -132,33 +136,36 @@ val uDStream = linesDStream.map(_._2).map(_.split(",")).map(p => Dates(p(0).toSt
 
 uDStream.foreachRDD{ rdd =>
 
-          if (!rdd.isEmpty) {
-		
+	if (!rdd.isEmpty) {
+		 
+                  val now: Long = System.currentTimeMillis 
+ 		
         	  val count = rdd.count
         	  println("count received " + count)
 
-		        //rdd.saveAsTextFile(hdfsdir)
+		  rdd.saveAsTextFile(hdfsdir+"_f_"+now.toString())
 
         	  val sqlContext = SQLContext.getOrCreate(rdd.sparkContext)
        	       
-            val df = rdd.toDF()
+                  val df = rdd.toDF()
 
-    //extract mysql tablespace rows through dataframes
+
+
+//extract mysql tablespace rows through dataframes
 
 
   val d_test = sqlContext.read.format("jdbc").options(
         Map(
-          "url" -> "jdbc:mysql://localhost:3306/networkmonitoring?user=root&password=<password>",
+          "url" -> "jdbc:mysql://localhost:3306/networkmonitoring?user=root&password=M0ns00n!!!",
           "dbtable" -> "networkmonitor",
           "driver" -> "com.mysql.jdbc.Driver"
         )).load()
 
-        d_test.show()
+  d_test.show()
 
         //write to MySQL through dataframes
 
-        df.write.mode(SaveMode.Append).jdbc(url,"networkmonitor",prop)
-
+  df.write.mode(SaveMode.Append).jdbc(url,"networkmonitor",prop)
 
 
         }
