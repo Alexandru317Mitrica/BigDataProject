@@ -1,0 +1,7 @@
+
+Compile both programs as: gcc <program_name.c> -o <program>
+
+While the host awaits for connections, the container must be run with the IP of docker's gateway.
+
+(possible example of container gateway IP)
+./container 172.17.0.1
