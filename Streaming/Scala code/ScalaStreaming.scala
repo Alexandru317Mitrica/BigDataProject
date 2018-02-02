@@ -156,14 +156,14 @@ uDStream.foreachRDD{ rdd =>
 
   val d_test = sqlContext.read.format("jdbc").options(
         Map(
-          "url" -> "jdbc:mysql://localhost:3306/networkmonitoring?user=root&password=M0ns00n!!!",
+          "url" -> "jdbc:mysql://localhost:3306/networkmonitoring?user=root&password=<password>",
           "dbtable" -> "networkmonitor",
           "driver" -> "com.mysql.jdbc.Driver"
         )).load()
 
   d_test.show()
 
-        //write to MySQL through dataframes
+        //write to MySQL 
 
   df.write.mode(SaveMode.Append).jdbc(url,"networkmonitor",prop)
 
