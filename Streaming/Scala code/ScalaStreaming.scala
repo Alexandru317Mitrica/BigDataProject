@@ -106,7 +106,7 @@ case class Dates(date: String,
 		StructField("destination_IP", StringType, true),
 		StructField("destination_port", DoubleType, true),
 		StructField("protocolTCP", StringType, true),
-		StructField("lengthsource", DoubleType, true) ))
+		StructField("length", DoubleType, true) ))
 
 
 
