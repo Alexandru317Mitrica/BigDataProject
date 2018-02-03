@@ -74,7 +74,7 @@ case class Dates(date: String,
 		 destination_IP : String, 
 		 destination_port : Double, 
 		 protocolTCP: String, 
-		 lengthsource: Double)
+		 length: Double)
 
   def main(args: Array[String]) {
 
